@@ -13,7 +13,7 @@ const replaceComma = (str) => {
 
 const getAllProducts = async (req, res) => {
   // This fix the bug when user provide unnecessary query
-  const { featured, company, name, sort, fields } = req.query
+  const { featured, company, name, sort, fields, numericFilters } = req.query
   const queryObject = {}
 
   if (featured) {
@@ -26,6 +26,34 @@ const getAllProducts = async (req, res) => {
 
   if (name) {
     queryObject.name = { $regex: name, $options: 'i' }
+  }
+
+  // logic for the numericFilter system
+  if (numericFilters) {
+    const operatorMap = {
+      '<': '$lt',
+      '<=': '$lte',
+      '=': '$eq',
+      '>': '$gt',
+      '<=': '$gte',
+    }
+
+    const regex = /\b(<|<=|=|>|>=)\b/g
+
+    let filters = numericFilters.replace(
+      regex,
+      (match) => `-${operatorMap[match]}-`
+    )
+
+    // NumericFilters only work on field with Number value
+    const options = ['price', 'rating']
+    filters = filters.split(',').forEach((item) => {
+      const [field, operator, value] = item.split('-')
+      console.log(field, operator, value)
+      if (options.includes(field)) {
+        queryObject[field] = { [operator]: Number(value) }
+      }
+    })
   }
 
   // logic for the paging system
