@@ -1,5 +1,5 @@
 ## Task Manager
-A simple mock store API created with NodeJS and Express to show how you can filter using mongoDB
+A simple mock store API created with NodeJS and Express to practice filtering with mongoDB
 
 ### Get Started
 1. Create a .env file in the root
