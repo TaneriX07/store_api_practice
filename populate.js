@@ -13,8 +13,10 @@ const start = async () => {
     console.log('DB cleared')
     await Product.create(data)
     console.log('DB populated')
+    process.exit(0)
   } catch (error) {
     console.log(error)
+    process.exit(1)
   }
 }
 
